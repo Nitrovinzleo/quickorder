@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Finaliser votre commande — QuickOrder{% endblock %}
+
+{% block content %}
+<div class="form-card" id="checkout-form-card">
+    <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 1.5rem; text-align: center;">
+        <i class="fa-solid fa-credit-card" style="color: var(--primary);"></i> Finaliser la commande
+    </h2>
+
+    <form id="checkout-form">
+        <div class="form-group">
+            <label for="customer_name"><i class="fa-solid fa-user"></i> Nom complet</label>
+            <input type="text" id="customer_name" class="form-control" placeholder="Jean Dupont" required>
+        </div>
+
+        <div class="form-group">
+            <label for="customer_email"><i class="fa-solid fa-envelope"></i> Adresse Email</label>
+            <input type="email" id="customer_email" class="form-control" placeholder="jean.dupont@example.com" required>
+        </div>
+
+        <div class="form-group">
+            <label for="customer_phone"><i class="fa-solid fa-phone"></i> Numéro de Téléphone</label>
+            <input type="tel" id="customer_phone" class="form-control" placeholder="06 12 34 56 78" required>
+        </div>
+
+        <div class="form-group">
+            <label for="order_type"><i class="fa-solid fa-utensils"></i> Mode de retrait</label>
+            <select id="order_type" class="form-control">
+                <option value="takeaway">À emporter</option>
+                <option value="dine-in">Sur place</option>
+                <option value="delivery">Livraison à domicile</option>
+            </select>
+        </div>
+
+        <div style="background: rgba(15, 23, 42, 0.8); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin: 1.5rem 0;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem;">Récapitulatif du panier</h3>
+            <div id="checkout-summary-items">
+                <!-- Populated by JS -->
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 800; border-top: 1px solid var(--border-color); padding-top: 0.75rem; margin-top: 0.75rem;">
+                <span>Total à payer :</span>
+                <span id="checkout-total-price" style="color: var(--primary);">0.00 €</span>
+            </div>
+        </div>
+
+        <button type="submit" class="checkout-btn" style="width: 100%; border: none;">
+            Valider et payer la commande <i class="fa-solid fa-check-circle"></i>
+        </button>
+    </form>
+</div>
+{% endblock %}

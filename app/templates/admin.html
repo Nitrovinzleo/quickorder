@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Administration des commandes — QuickOrder{% endblock %}
+
+{% block content %}
+<section id="admin-dashboard">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <div>
+            <h1 style="font-size: 2.2rem; font-weight: 800;">Administration des Commandes</h1>
+            <p class="text-muted">Gérez et suivez le statut de préparation des commandes en direct.</p>
+        </div>
+        <button onclick="location.reload()" class="pill-btn active">
+            <i class="fa-solid fa-rotate-right"></i> Actualiser
+        </button>
+    </div>
+
+    {% if orders %}
+    <div style="overflow-x: auto;">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th># ID</th>
+                    <th>Date</th>
+                    <th>Client</th>
+                    <th>Contact</th>
+                    <th>Articles</th>
+                    <th>Total</th>
+                    <th>Mode</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for o in orders %}
+                <tr>
+                    <td><strong>#{{ o.id }}</strong></td>
+                    <td style="font-size: 0.85rem; color: var(--text-muted);">{{ o.created_at.strftime('%d/%m %H:%M') if o.created_at else '' }}</td>
+                    <td><strong>{{ o.customer_name }}</strong></td>
+                    <td style="font-size: 0.85rem; color: var(--text-muted);">
+                        {{ o.customer_phone }}<br>{{ o.customer_email }}
+                    </td>
+                    <td style="font-size: 0.9rem;">
+                        <ul style="padding-left: 1.2rem;">
+                            {% for item in o.items %}
+                            <li>{{ item.quantity }}x {{ item.menu_item.name if item.menu_item else 'Produit' }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td style="font-weight: 700; color: var(--primary);">{{ "%.2f"|format(o.total_amount) }} €</td>
+                    <td><span class="badge" style="background: rgba(255,255,255,0.08);">{{ o.order_type }}</span></td>
+                    <td>
+                        <select class="form-control admin-status-select" data-order-id="{{ o.id }}" style="padding: 0.35rem 0.6rem; font-size: 0.85rem; width: auto;">
+                            <option value="pending" {% if o.status == 'pending' %}selected{% endif %}>En attente</option>
+                            <option value="preparing" {% if o.status == 'preparing' %}selected{% endif %}>En préparation</option>
+                            <option value="ready" {% if o.status == 'ready' %}selected{% endif %}>Prête</option>
+                            <option value="completed" {% if o.status == 'completed' %}selected{% endif %}>Terminée</option>
+                            <option value="cancelled" {% if o.status == 'cancelled' %}selected{% endif %}>Annulée</option>
+                        </select>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="form-card" style="text-align: center;">
+        <p class="text-muted">Aucune commande enregistrée pour le moment.</p>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

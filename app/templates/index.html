@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}QuickOrder — Notre Carte{% endblock %}
+
+{% block content %}
+<!-- Hero Header -->
+<section class="hero" id="hero-section">
+    <h1>Commandez vos plats préférés <span style="color: var(--primary);">en 2 clics</span></h1>
+    <p>Livraison rapide ou à emporter. Ingrédients frais, préparés à la commande.</p>
+</section>
+
+<!-- Category Filter Pills -->
+<div class="category-pills" id="category-pills-container">
+    <button class="pill-btn active" data-category="all" id="pill-category-all">
+        <i class="fa-solid fa-border-all"></i> Tout le menu
+    </button>
+    {% for cat in categories %}
+    <button class="pill-btn" data-category="{{ cat.slug }}" id="pill-category-{{ cat.slug }}">
+        <i class="fa-solid fa-{{ cat.icon }}"></i> {{ cat.name }}
+    </button>
+    {% endfor %}
+</div>
+
+<!-- Menu Grid -->
+<div class="menu-grid" id="menu-grid-container">
+    {% for cat in categories %}
+        {% for item in cat.items %}
+        <div class="menu-card" data-category="{{ cat.slug }}" id="menu-card-{{ item.id }}">
+            <div class="card-img-wrapper">
+                <img src="{{ item.image_url or 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=80' }}" alt="{{ item.name }}" class="card-img">
+            </div>
+            <div class="card-body">
+                <h3 class="card-title">{{ item.name }}</h3>
+                <p class="card-desc">{{ item.description }}</p>
+                <div class="card-footer">
+                    <span class="price-tag">{{ "%.2f"|format(item.price) }} €</span>
+                    <button class="add-to-cart-btn" onclick="addToCart({{ item.id }}, '{{ item.name|replace("'", "\\'") }}', {{ item.price }})" id="add-btn-{{ item.id }}">
+                        <i class="fa-solid fa-plus"></i> Ajouter
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endfor %}
+</div>
+{% endblock %}
