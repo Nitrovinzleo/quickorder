@@ -1,0 +1,29 @@
+﻿ID;Type;Titre;Objectif;Preconditions;Donnees;Resultat_Attendu;Resultat_Obtenu;Statut
+TC-NOM-01;Nominal;Connexion utilisateur valide;Verifier l'authentification avec identifiants valides;Base seedee;alice@example.com / Password123!;Connexion reussie et acces au profil;Conforme;PASS
+TC-NOM-02;Nominal;Affichage catalogue restaurants;Verifier le listing des restaurants en page d'accueil;Serveur actif;Page /;Restaurants visibles avec notes et delais;Conforme;PASS
+TC-NOM-03;Nominal;Ajout plat au panier;Verifier l'ajout d'un plat disponible au panier;Panier vide;Classic Burger (11.90 €);Plat ajoute au panier avec quantite 1;Conforme;PASS
+TC-NOM-04;Nominal;Application coupon valide;Verifier l'application d'un coupon 10% eligible;Panier > 20 €;WELCOME10;Reduction 10% deduite du total;Conforme;PASS
+TC-NOM-05;Nominal;Paiement carte bancaire;Valider une commande par carte bancaire;Panier rempli;Paiement carte;Commande confirmee statut confirmed;Conforme;PASS
+TC-NOM-06;Nominal;Historique commandes profil;Consulter les commandes passees;1 commande passee;Page /profile;Commande affichee avec detail et montant;Conforme;PASS
+TC-NOM-07;Nominal;Paiement PayPal;Valider une commande par PayPal;Panier rempli;Paiement PayPal;Une seule commande creee;Deux commandes identiques creees (BUG-001);FAIL
+TC-LIM-01;Limite;Quantite mise a zero dans panier;Tester quantite = 0;1 article au panier;Quantite = 0;Suppression ou rejet;Article non supprime proprement;FAIL
+TC-LIM-02;Limite;Sous-total egal au minimum coupon;Tester seuil exact 20.00 €;Sous-total = 20.00 €;WELCOME10;Coupon accepte;Conforme;PASS
+TC-LIM-03;Limite;Sous-total a 1 centime du minimum;Tester sous-total = 19.99 €;Sous-total = 19.99 €;WELCOME10;Coupon refuse;Conforme;PASS
+TC-LIM-04;Limite;Quantite superieure au stock;Tester quantite > stock reel;Stock = 2;Quantite = 10;Blocage par le stock;Commande acceptee, stock negatif (BUG-004);FAIL
+TC-LIM-05;Limite;Plafonnement reduction coupon;Tester max_discount sur grosse commande;Total 200 €;WELCOME10 (max 8 €);Reduction plafonnee a 8 €;Conforme;PASS
+TC-LIM-06;Limite;Paiement especes montant exact;Tester cash = total;Total = 15.49 €;Cash = 15.49 €;Accepte, monnaie = 0.00 €;Conforme;PASS
+TC-LIM-07;Limite;Paiement especes insuffisant;Tester cash < total;Total = 25.00 €;Cash = 10.00 €;Rejet pour montant insuffisant;Accepte avec monnaie negative (BUG-005);FAIL
+TC-ERR-01;Erreur;Connexion mot de passe faux;Rejeter mot de passe incorrect;Compte existant;Mauvais mot de passe;Message identifiants invalides;Conforme;PASS
+TC-ERR-02;Erreur;Inscription email existant;Verifier unicite email;Email alice deja pris;alice@example.com;Message email deja utilise;Conforme;PASS
+TC-ERR-03;Erreur;Coupon inexistant;Tester code promo invalide;Panier actif;FAUXCODE99;Message coupon invalide;Conforme;PASS
+TC-ERR-04;Erreur;Coupon expire;Tester coupon dont la date est depassee;Panier actif;EXPIRED10;Message coupon expire;Conforme;PASS
+TC-ERR-05;Erreur;Appel API sans cle;Verifier protection API REST;API publique;GET /api/restaurants;HTTP 401 Unauthorized;Conforme;PASS
+TC-ERR-06;Erreur;Listing commandes API crash;Consulter commandes via API;Cle API fournie;GET /api/orders;HTTP 200 avec liste JSON;Crash HTTP 500 AttributeError (BUG-010);FAIL
+TC-ERR-07;Erreur;Sous-total falsifie API coupon;Tester injection sous-total artificiel;Cle API fournie;POST /api/coupons/validate;Recalcul serveur obligatoire;Sous-total client accepte aveuglement (BUG-012);FAIL
+TC-BUS-01;Regle Metier;Multi-restaurants interdit;Interdire plats de 2 restos;1 plat de resto A;Ajout plat resto B;Alerte et rejet ajout;Conforme;PASS
+TC-BUS-02;Regle Metier;Commande resto ferme;Interdire commande si resto ferme;Resto is_open = False;Validation checkout;Blocage commande;Commande acceptee chez resto ferme (BUG-002);FAIL
+TC-BUS-03;Regle Metier;Montant minimum restaurant;Respecter minimum_order;Min resto = 20 €;Panier = 11.90 €;Checkout bloque;Commande confirmee sous le minimum (BUG-003);FAIL
+TC-BUS-04;Regle Metier;Produit rupture de stock;Interdire achat plat stock = 0;Plat stock = 0;Ajout au panier;Produit marque epuise;Plat commandable malgre rupture (BUG-004);FAIL
+TC-BUS-05;Regle Metier;Taux promo ATLAS15 conforme;Verifier promo annoncee 15%;Coupon ATLAS15;Application checkout;15% de reduction;Seulement 10% appliques en base (BUG-006);FAIL
+TC-BUS-06;Regle Metier;Filtre livraison economique;Filtrer resto frais <= 2.50 €;Page accueil;Filtre frais bas;Restos a frais <= 2.50 €;Filtre inverse affichant les frais eleves (BUG-007);FAIL
+TC-BUS-07;Regle Metier;Avis sans achat prealable;Interdire review sans commande;Client sans commande;Avis sur Tokyo Bowl;Rejet pour absence d'achat;Avis publie sans controle (BUG-009);FAIL
